@@ -1,0 +1,134 @@
+﻿@model IEnumerable<Warehouse_25DH110382.Models.Product>
+
+@{
+    ViewBag.Title = "Danh sách sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    h2 {
+        margin-bottom: 20px;
+        color: #2c3e50;
+        font-size: 22px;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 8px;
+        display: inline-block;
+    }
+
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 14px;
+        background: white;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+        .styled-table th, .styled-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e1e1;
+        }
+
+        .styled-table th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+
+        .styled-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+    /* Badge trạng thái kho */
+    .badge {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+        color: white;
+        display: inline-block;
+    }
+
+    .bg-danger {
+        background-color: #e74c3c;
+    }
+    /* Hết hàng */
+    .bg-warning {
+        background-color: #f39c12;
+        color: #fff;
+    }
+    /* Sắp hết */
+    .bg-success {
+        background-color: #2ecc71;
+    }
+    /* Đủ hàng */
+
+    /* Nút bấm */
+    .btn-edit {
+        background-color: #f39c12;
+        color: white;
+        padding: 6px 12px;
+        text-decoration: none;
+        border-radius: 3px;
+        font-size: 13px;
+    }
+
+        .btn-edit:hover {
+            background-color: #d68910;
+        }
+</style>
+
+<h2>Danh sách sản phẩm kho hàng</h2>
+
+<table class="styled-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên sản phẩm</th>
+            <th>Danh mục</th>
+            <th>Đơn giá</th>
+            <th>Số lượng</th>
+            <th>Tình trạng</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ProductID</td>
+                    <td>@item.ProductName</td>
+                    <td>@item.Category</td>
+                    <td>@item.Price.ToString("N0") đ</td>
+                    <td>@item.Quantity</td>
+                    <td>
+                        @if (item.Quantity == 0)
+                        {
+                            <span class="badge bg-danger">Hết hàng</span>
+                        }
+                        else if (item.Quantity >= 1 && item.Quantity <= 4)
+                        {
+                            <span class="badge bg-warning">Sắp hết</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Đủ hàng</span>
+                        }
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Edit", new { id = item.ProductID })" class="btn-edit">Sửa</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" style="text-align: center; color: #7f8c8d;">Không có dữ liệu sản phẩm trong hệ thống.</td>
+            </tr>
+        }
+    </tbody>
+</table>

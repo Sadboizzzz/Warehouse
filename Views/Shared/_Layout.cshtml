@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - Quản Lý Kho</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            header h4 {
+                font-size: 20px;
+            }
+
+            header small {
+                font-size: 14px;
+                color: #bdc3c7;
+            }
+
+        /* Container chia 2 cột */
+        .wrapper {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Sidebar bên trái */
+        nav {
+            width: 260px;
+            background-color: #ffffff;
+            border-right: 1px solid #ddd;
+            padding: 20px;
+        }
+
+            nav h6 {
+                font-size: 14px;
+                text-transform: uppercase;
+                color: #7f8c8d;
+                margin-bottom: 12px;
+            }
+
+            nav ul {
+                list-style: none;
+            }
+
+                nav ul li {
+                    margin-bottom: 8px;
+                }
+
+                    nav ul li a {
+                        display: block;
+                        padding: 10px 15px;
+                        color: #2c3e50;
+                        text-decoration: none;
+                        border-radius: 4px;
+                        font-size: 14px;
+                        transition: 0.2s;
+                    }
+
+                        nav ul li a:hover {
+                            background-color: #3498db;
+                            color: white;
+                        }
+
+        /* Nội dung chính */
+        main {
+            flex: 1;
+            padding: 30px;
+            background-color: #fff;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h4>HỆ THỐNG QUẢN LÝ KHO HÀNG</h4>
+        <small>Sinh viên: <strong>Nguyễn Duy Hưng</strong> | MSSV: <strong>21000001</strong></small>
+    </header>
+
+    <div class="wrapper">
+        <nav>
+            <h6>Chức năng</h6>
+            <ul>
+                <li><a href="@Url.Action("Index", "Product")">Danh sách & Sửa SP</a></li>
+                <li><a href="@Url.Action("Search", "Product")">Tra cứu hàng hóa</a></li>
+                <li><a href="@Url.Action("InventoryCheck1", "Product")">Kiểm kê 1 sản phẩm</a></li>
+                <li><a href="@Url.Action("InventoryCheck2", "Product")">Kiểm kê 2 sản phẩm</a></li>
+                <li><a href="@Url.Action("Create", "Product")">Thêm sản phẩm mới</a></li>
+                <li><a href="@Url.Action("Statistics", "Product")">Thống kê kết quả</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer>
+        <span>Ngày tháng năm sinh: <strong>02/07/2007</strong></span>
+    </footer>
+
+</body>
+</html>

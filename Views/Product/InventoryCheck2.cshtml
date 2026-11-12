@@ -1,0 +1,163 @@
+﻿@{
+    ViewBag.Title = "Kiểm kê đồng thời 2 sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .form-container {
+        max-width: 650px;
+        background: white;
+        padding: 25px;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        color: #2c3e50;
+        font-size: 22px;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 8px;
+        display: inline-block;
+    }
+
+    .product-box {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        border: 1px solid #e1e1e1;
+    }
+
+        .product-box h4 {
+            margin-bottom: 10px;
+            color: #3498db;
+            font-size: 15px;
+        }
+
+    .form-group {
+        margin-bottom: 12px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+            font-size: 13px;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .btn-submit {
+        background-color: #3498db;
+        color: white;
+        padding: 10px 18px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+        .btn-submit:hover {
+            background-color: #2980b9;
+        }
+
+    .btn-list {
+        background-color: #2ecc71;
+        color: white;
+        padding: 10px 18px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 14px;
+        display: inline-block;
+        margin-top: 15px;
+    }
+
+        .btn-list:hover {
+            background-color: #27ae60;
+        }
+
+    /* Thông báo lỗi & kết quả */
+    .alert-error {
+        background-color: #fdf2f2;
+        color: #e74c3c;
+        border: 1px solid #f5c6cb;
+        padding: 12px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .result-box {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 6px;
+        background-color: #f4f6f9;
+        border-left: 5px solid #2ecc71;
+    }
+
+        .result-box p {
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+</style>
+
+<div class="form-container">
+    <h2>Kiểm kê đồng thời 2 sản phẩm</h2>
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert-error">@ViewBag.ErrorMessage</div>
+    }
+
+    @using (Html.BeginForm("InventoryCheck2", "Product", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <!-- Sản phẩm 1 -->
+        <div class="product-box">
+            <h4>Sản phẩm thứ nhất</h4>
+            <div class="form-group">
+                <label>Chọn sản phẩm</label>
+                @Html.DropDownList("productId1", (SelectList)ViewBag.ProductList1, "-- Chọn sản phẩm 1 --", new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>Số lượng thực tế</label>
+                <input type="number" name="qty1" class="form-control" placeholder="Nhập số lượng mới (>= 0)" />
+            </div>
+        </div>
+
+        <!-- Sản phẩm 2 -->
+        <div class="product-box">
+            <h4>Sản phẩm thứ hai</h4>
+            <div class="form-group">
+                <label>Chọn sản phẩm</label>
+                @Html.DropDownList("productId2", (SelectList)ViewBag.ProductList2, "-- Chọn sản phẩm 2 --", new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>Số lượng thực tế</label>
+                <input type="number" name="qty2" class="form-control" placeholder="Nhập số lượng mới (>= 0)" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Xác nhận cập nhật đồng thời</button>
+    }
+
+    @if (ViewBag.SuccessMessage != null)
+    {
+        <div class="result-box">
+            <p style="color: #27ae60; font-weight: bold;">@ViewBag.SuccessMessage</p>
+            <p>✔ @ViewBag.Result1</p>
+            <p>✔ @ViewBag.Result2</p>
+            <a href="@Url.Action("Index", "Product")" class="btn-list">Xem danh sách sản phẩm</a>
+        </div>
+    }
+</div>

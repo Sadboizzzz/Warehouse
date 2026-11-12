@@ -1,0 +1,211 @@
+﻿@model IEnumerable<Warehouse_25DH110382.Models.Product>
+
+@{
+    ViewBag.Title = "Tra cứu hàng hóa";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    h2 {
+        margin-bottom: 20px;
+        color: #2c3e50;
+        font-size: 22px;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 8px;
+        display: inline-block;
+    }
+
+    /* Khung tìm kiếm */
+    .search-form {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .form-group-inline {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .form-group-inline label {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+    .form-control {
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        min-width: 180px;
+    }
+
+    .btn-search {
+        background-color: #3498db;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+        .btn-search:hover {
+            background-color: #2980b9;
+        }
+
+    /* Bảng dữ liệu */
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 14px;
+        background: white;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+        .styled-table th, .styled-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e1e1;
+        }
+
+        .styled-table th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+
+        .styled-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+    /* Badge trạng thái */
+    .badge {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+        color: white;
+        display: inline-block;
+    }
+
+    .bg-danger {
+        background-color: #e74c3c;
+    }
+
+    .bg-warning {
+        background-color: #f39c12;
+        color: #fff;
+    }
+
+    .bg-success {
+        background-color: #2ecc71;
+    }
+
+    /* Thông báo không có kết quả */
+    .no-result {
+        text-align: center;
+        color: #e74c3c;
+        font-weight: bold;
+        padding: 20px;
+        background: #fdf2f2;
+        border: 1px solid #f5c6cb;
+        border-radius: 4px;
+        margin-top: 15px;
+    }
+</style>
+
+<h2>Tra cứu hàng hóa</h2>
+
+@using (Html.BeginForm("Search", "Product", FormMethod.Get))
+{
+    <div class="search-form">
+        <div class="form-group-inline">
+            <label>Tên sản phẩm</label>
+            <input type="text" name="searchString" value="@ViewBag.SearchString" class="form-control" placeholder="Nhập tên sản phẩm..." />
+        </div>
+
+        <div class="form-group-inline">
+            <label>Trạng thái tồn kho</label>
+            <select name="stockStatus" class="form-control">
+                <option value="">-- Tất cả trạng thái --</option>
+                <option value="0" @(ViewBag.StockStatus?.ToString() == "0" ? "selected" : "")>Hết hàng (0)</option>
+                <option value="1" @(ViewBag.StockStatus?.ToString() == "1" ? "selected" : "")>Sắp hết (1 - 4)</option>
+                <option value="2" @(ViewBag.StockStatus?.ToString() == "2" ? "selected" : "")>Đủ hàng (>= 5)</option>
+            </select>
+        </div>
+
+        <div class="form-group-inline">
+            <label>Sắp xếp giá</label>
+            <select name="sortOrder" class="form-control">
+                <option value="">-- Mặc định --</option>
+                <option value="price_asc" @(ViewBag.CurrentSort == "price_asc" ? "selected" : "")>Giá tăng dần</option>
+                <option value="price_desc" @(ViewBag.CurrentSort == "price_desc" ? "selected" : "")>Giá giảm dần</option>
+            </select>
+        </div>
+
+        <div class="form-group-inline">
+            <label>&nbsp;</label>
+            <button type="submit" class="btn-search">Tìm kiếm</button>
+        </div>
+    </div>
+}
+
+<table class="styled-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên sản phẩm</th>
+            <th>Danh mục</th>
+            <th>Đơn giá</th>
+            <th>Số lượng</th>
+            <th>Tình trạng</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ProductID</td>
+                    <td>@item.ProductName</td>
+                    <td>@item.Category</td>
+                    <td>@item.Price.ToString("N0") đ</td>
+                    <td>@item.Quantity</td>
+                    <td>
+                        @if (item.Quantity == 0)
+                        {
+                            <span class="badge bg-danger">Hết hàng</span>
+                        }
+                        else if (item.Quantity >= 1 && item.Quantity <= 4)
+                        {
+                            <span class="badge bg-warning">Sắp hết</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Đủ hàng</span>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6">
+                    <div class="no-result">Không tìm thấy sản phẩm nào phù hợp với điều kiện tra cứu!</div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
